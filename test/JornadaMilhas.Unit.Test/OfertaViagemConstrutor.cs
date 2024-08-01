@@ -20,8 +20,8 @@ public class OfertaViagemConstrutor
         OfertaViagem oferta = new OfertaViagem(rota, periodo, preco);
 
         //assert
-        Assert.Equal(validacao, oferta.EhValido);
-
+        //Assert.Equal(validacao, oferta.EhValido);
+        Assert.Fail("Erro");
     }
 
     [Fact]
