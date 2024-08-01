@@ -8,10 +8,8 @@ public class JornadaMilhasContext : IdentityDbContext
     public DbSet<OfertaViagem> OfertasViagem { get; set; }
     public DbSet<Rota> Rota { get; set; }
 
-    public JornadaMilhasContext()
-    {
+    public JornadaMilhasContext() { }
 
-    }
     public JornadaMilhasContext(DbContextOptions<JornadaMilhasContext> options) : base(options) { }
 
     //private string connectionString = "Server=tcp:jornadamilhasbdserver.database.windows.net,1433;Initial Catalog=JornadaMilhasV3;Persist Security Info=False;User ID=andre;Password=Alura#2024;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
@@ -21,23 +19,17 @@ public class JornadaMilhasContext : IdentityDbContext
     {
 
         if (optionsBuilder.IsConfigured)
-        {
             return;
-        }
-        optionsBuilder
-            .UseLazyLoadingProxies()
-            .UseSqlServer(connectionString);
 
+        optionsBuilder.UseLazyLoadingProxies().UseSqlServer(connectionString);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //Rota
         modelBuilder.Entity<Rota>().HasKey(e => e.Id);
-        modelBuilder.Entity<Rota>()
-                        .Property(a => a.Origem);
-        modelBuilder.Entity<Rota>()
-                        .Property(a => a.Destino);
+        modelBuilder.Entity<Rota>().Property(a => a.Origem);
+        modelBuilder.Entity<Rota>().Property(a => a.Destino);
         modelBuilder.Entity<Rota>().Ignore(a => a.Erros);
         modelBuilder.Entity<Rota>().Ignore(a => a.EhValido);
 
@@ -51,12 +43,10 @@ public class JornadaMilhasContext : IdentityDbContext
                             periodo.Ignore(e => e.Erros);
                             periodo.Ignore(e => e.EhValido);
                         });
-        modelBuilder.Entity<OfertaViagem>()
-            .Property(o => o.Preco);
+        modelBuilder.Entity<OfertaViagem>().Property(o => o.Preco);
         modelBuilder.Entity<OfertaViagem>().Ignore(a => a.Erros);
         modelBuilder.Entity<OfertaViagem>().Ignore(a => a.EhValido);
 
         base.OnModelCreating(modelBuilder);
     }
-
 }
