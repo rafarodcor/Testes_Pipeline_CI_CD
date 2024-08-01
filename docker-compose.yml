@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  jornadamilhas.api:
+    image: ${DOCKER_REGISTRY-}jornadamilhasapi
+    build:
+      context: .
+      dockerfile: src/JornadaMilhas.API/Dockerfile
+    ports:
+      - '57398:8080'
+      - '57399:8081'
+    depends_on:
+      - sqlserver
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    hostname: 'sqlserver'
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD: "sqlRRC00!"
+    volumes:
+    - d:\dev\Alura\Arquivos\SQLs\dados\mssql:/var/opt/mssql3
+    ports:
+      - '11433:1433'
+    expose:
+      - 1433
+      
