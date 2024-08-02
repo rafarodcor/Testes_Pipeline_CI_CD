@@ -5,7 +5,8 @@ using System.Net;
 
 namespace JornadaMilhas.Integration.Test.API;
 
-public class OfertaViagem_DELETE : IClassFixture<JornadaMilhasWebApplicationFactory>
+[Collection(nameof(ContextCollection))]
+public class OfertaViagem_DELETE// : IClassFixture<JornadaMilhasWebApplicationFactory>
 {
     private readonly JornadaMilhasWebApplicationFactory _app;
 

@@ -6,7 +6,8 @@ using System.Net.Http.Json;
 
 namespace JornadaMilhas.Integration.Test.API;
 
-public class OfertaViagem_GET : IClassFixture<JornadaMilhasWebApplicationFactory>
+[Collection(nameof(ContextCollection))]
+public class OfertaViagem_GET// : IClassFixture<JornadaMilhasWebApplicationFactory>
 {
     private readonly JornadaMilhasWebApplicationFactory _app;
 

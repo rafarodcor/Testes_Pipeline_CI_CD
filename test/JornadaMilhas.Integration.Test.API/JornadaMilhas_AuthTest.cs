@@ -4,7 +4,8 @@ using System.Net.Http.Json;
 
 namespace JornadaMilhas.Integration.Test.API;
 
-public class JornadaMilhas_AuthTest : IClassFixture<JornadaMilhasWebApplicationFactory>
+[Collection(nameof(ContextCollection))]
+public class JornadaMilhas_AuthTest// : IClassFixture<JornadaMilhasWebApplicationFactory>
 {
     private readonly JornadaMilhasWebApplicationFactory _app;
 

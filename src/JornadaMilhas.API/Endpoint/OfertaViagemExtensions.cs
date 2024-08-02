@@ -60,7 +60,6 @@ public static class OfertaViagemExtensions
             ofertaAtualizada.Preco = ofertaReq.preco;
             await entityDAL.Atualizar(ofertaAtualizada);
             return Results.NoContent();
-
         })
         .WithTags("Oferta Viagem").WithSummary("Atualiza uma oferta de viagem.").WithOpenApi().RequireAuthorization();
 
@@ -70,15 +69,7 @@ public static class OfertaViagemExtensions
             if (oferta is null) return Results.NotFound();
             return Results.Ok(converter.EntityListToResponseList(oferta));
         })
-        .WithTags("Oferta Viagem").WithSummary("Obtem oferta de viagem paginado.").WithOpenApi().RequireAuthorization();
-
-        app.MapGet("/ofertas-viagem/", async ([FromServices] OfertaViagemConverter converter, [FromServices] EntityDAL<OfertaViagem> entityDAL, [FromQuery] int pagina = 1, [FromQuery] int tamanhoPorPagina = 25) =>
-        {
-            var oferta = await entityDAL.ListarPaginado(pagina, tamanhoPorPagina);
-            if (oferta is null) return Results.NotFound();
-            return Results.Ok(converter.EntityListToResponseList(oferta));
-        })
-        .WithTags("Oferta Viagem").WithSummary("Obtem oferta de viagem paginado.").WithOpenApi().RequireAuthorization();
+        .WithTags("Oferta Viagem").WithSummary("Obtem oferta de viagem paginado.").WithOpenApi().RequireAuthorization();        
 
         app.MapGet("/ofertas-viagem/maior-desconto", async ([FromServices] OfertaViagemConverter converter, [FromServices] EntityDAL<OfertaViagem> entityDAL) =>
         {
