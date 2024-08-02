@@ -4,20 +4,21 @@ using System.Net;
 using System.Net.Http.Json;
 
 namespace JornadaMilhas.Integration.Test.API;
+
 public class OfertaViagem_POST : IClassFixture<JornadaMilhasWebApplicationFactory>
 {
-    private readonly JornadaMilhasWebApplicationFactory app;
+    private readonly JornadaMilhasWebApplicationFactory _app;
 
     public OfertaViagem_POST(JornadaMilhasWebApplicationFactory app)
     {
-        this.app = app;
+        _app = app;
     }
+
     [Fact]
     public async Task Cadastra_OfertaViagem()
     {
-        //Arrange  
-
-        using var client = await app.GetClientWithAccessTokenAsync();
+        //Arrange
+        using var client = await _app.GetClientWithAccessTokenAsync();
 
         var ofertaViagem = new OfertaViagem()
         {
@@ -37,7 +38,7 @@ public class OfertaViagem_POST : IClassFixture<JornadaMilhasWebApplicationFactor
     public async Task Tenta_Cadastrar_OfertaViagem_SemAutorizacao()
     {
         //Arrange
-        using var client = app.CreateClient();
+        using var client = _app.CreateClient();
 
         var ofertaViagem = new OfertaViagem()
         {
@@ -52,5 +53,4 @@ public class OfertaViagem_POST : IClassFixture<JornadaMilhasWebApplicationFactor
         //Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
-
 }

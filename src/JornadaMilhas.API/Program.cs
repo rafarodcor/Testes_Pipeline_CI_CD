@@ -31,19 +31,19 @@ builder.Services.AddTransient(typeof(EntityDAL<Rota>));
 builder.Services.AddTransient(typeof(OfertaViagemConverter));
 builder.Services.AddTransient(typeof(RotaConverter));
 builder.Services.AddTransient(typeof(PeriodoConverter));
+
 //Tratamento do Token
 builder.Services.AddTransient(typeof(GenerateToken));
-
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(
     opt => opt.TokenValidationParameters = new TokenValidationParameters
     {
@@ -53,8 +53,7 @@ builder.Services
         ValidateIssuerSigningKey = true,
         ValidAudience = builder.Configuration["JWTTokenConfiguration:Audience"],
         ValidIssuer = builder.Configuration["JWTTokenConfiguration:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["JWTKey:key"]!)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTKey:key"]!))
     });
 
 builder.Services.AddCors();
@@ -80,7 +79,6 @@ app.UseCors(options =>
     options.AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader();
-
 });
 
 app.UseSwagger();
@@ -117,9 +115,7 @@ async Task ConfigureDefaultUser(IServiceProvider serviceProvider)
 
             var result = await userManager.CreateAsync(identityUser, "Senha123@");
             if (!result.Succeeded)
-            {
                 throw new Exception("Erro ao criar o usuário padrão.");
-            }
         }
     }
 }
@@ -154,5 +150,3 @@ async Task AdicionaRegistrosTabela(IServiceProvider serviceProvider)
     }
 }
 public partial class Program { }
-
-

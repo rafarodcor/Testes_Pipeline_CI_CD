@@ -2,23 +2,21 @@
 using System.Linq.Expressions;
 
 namespace JornadaMilhas.Dados.Database;
+
 public class EntityDAL<T> where T : class
 {
-    private readonly JornadaMilhasContext context;
+    private readonly JornadaMilhasContext _context;
 
     public EntityDAL(JornadaMilhasContext dbContext)
     {
-        context = dbContext;
+        _context = dbContext;
     }
 
-    public async Task<IEnumerable<T>> Listar()
-    {
-        return await context.Set<T>().ToListAsync();
-    }
+    public async Task<IEnumerable<T>> Listar() => await _context.Set<T>().ToListAsync();
+
     public async Task<IEnumerable<T>> ListaPaginadaAsync(int page, int pageSize)
     {
-
-        return await this.context.Set<T>()
+        return await _context.Set<T>()
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .AsNoTracking()
@@ -27,29 +25,27 @@ public class EntityDAL<T> where T : class
 
     public async Task Adicionar(T objeto)
     {
-        await context.Set<T>().AddAsync(objeto);
-        await context.SaveChangesAsync();
-    }
-    public async Task Atualizar(T objeto)
-    {
-        context.Set<T>().Update(objeto);
-        await context.SaveChangesAsync();
-    }
-    public async Task Deletar(T objeto)
-    {
-        context.Set<T>().Remove(objeto);
-        await context.SaveChangesAsync();
+        await _context.Set<T>().AddAsync(objeto);
+        await _context.SaveChangesAsync();
     }
 
-    public T? RecuperarPor(Func<T, bool> condicao)
+    public async Task Atualizar(T objeto)
     {
-        return context.Set<T>().FirstOrDefault(condicao);
+        _context.Set<T>().Update(objeto);
+        await _context.SaveChangesAsync();
     }
+
+    public async Task Deletar(T objeto)
+    {
+        _context.Set<T>().Remove(objeto);
+        await _context.SaveChangesAsync();
+    }
+
+    public T? RecuperarPor(Func<T, bool> condicao) => _context.Set<T>().FirstOrDefault(condicao);
 
     public async Task<IEnumerable<T>> ListarPaginado(int page, int pageSize)
     {
-
-        return await this.context.Set<T>()
+        return await this._context.Set<T>()
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -57,12 +53,9 @@ public class EntityDAL<T> where T : class
 
     public async Task<T?> UltimoRegistroAsync(Expression<Func<T, bool>> condicao = null)
     {
-        IQueryable<T> query = context.Set<T>();
+        IQueryable<T> query = _context.Set<T>();
         if (condicao != null)
-        {
             query = query.Where(condicao);
-        }
-        return await query.OrderByDescending(x => EF.Property<int>(x, "Id"))
-                                       .FirstOrDefaultAsync();
+        return await query.OrderByDescending(x => EF.Property<int>(x, "Id")).FirstOrDefaultAsync();
     }
 }

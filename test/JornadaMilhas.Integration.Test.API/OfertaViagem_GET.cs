@@ -5,21 +5,21 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Json;
 
 namespace JornadaMilhas.Integration.Test.API;
+
 public class OfertaViagem_GET : IClassFixture<JornadaMilhasWebApplicationFactory>
 {
-    private readonly JornadaMilhasWebApplicationFactory app;
+    private readonly JornadaMilhasWebApplicationFactory _app;
 
     public OfertaViagem_GET(JornadaMilhasWebApplicationFactory app)
     {
-        this.app = app;
+        _app = app;
     }
-
 
     [Fact]
     public async Task Recuperar_OfertaViagem_PorId()
     {
         //Arrange  
-        var ofertaExistente = app.Context.OfertasViagem.FirstOrDefault();
+        var ofertaExistente = _app.Context.OfertasViagem.FirstOrDefault();
         if (ofertaExistente is null)
         {
             ofertaExistente = new OfertaViagem()
@@ -28,11 +28,11 @@ public class OfertaViagem_GET : IClassFixture<JornadaMilhasWebApplicationFactory
                 Rota = new Rota("Origem", "Destino"),
                 Periodo = new Periodo(DateTime.Parse("2024-03-03"), DateTime.Parse("2024-03-06"))
             };
-            app.Context.Add(ofertaExistente);
-            app.Context.SaveChanges();
+            _app.Context.Add(ofertaExistente);
+            _app.Context.SaveChanges();
         }
 
-        using var client = await app.GetClientWithAccessTokenAsync();
+        using var client = await _app.GetClientWithAccessTokenAsync();
 
         //Act
         var response = await client.GetFromJsonAsync<OfertaViagem>("/ofertas-viagem/" + ofertaExistente.Id);
@@ -50,10 +50,10 @@ public class OfertaViagem_GET : IClassFixture<JornadaMilhasWebApplicationFactory
         //Arrange
         OfertaViagemDataBuilder databuilder = new OfertaViagemDataBuilder();
         var listaOfertas = databuilder.Generate(80);
-        app.Context.OfertasViagem.AddRange(listaOfertas);
-        app.Context.SaveChanges();
+        _app.Context.OfertasViagem.AddRange(listaOfertas);
+        _app.Context.SaveChanges();
 
-        using var client = await app.GetClientWithAccessTokenAsync();
+        using var client = await _app.GetClientWithAccessTokenAsync();
 
         int pagina = 1;
         int tamanhoPorPagina = 80;
@@ -70,15 +70,15 @@ public class OfertaViagem_GET : IClassFixture<JornadaMilhasWebApplicationFactory
     public async Task Recuperar_OfertasViagens_Na_Ultima_Pagina()
     {
         //Arrange
-        app.Context.Database.ExecuteSqlRaw("DELETE FROM OfertasViagem");
-        app.Context.Database.ExecuteSqlRaw("DELETE FROM Rota");
+        _app.Context.Database.ExecuteSqlRaw("DELETE FROM OfertasViagem");
+        _app.Context.Database.ExecuteSqlRaw("DELETE FROM Rota");
 
         OfertaViagemDataBuilder databuilder = new OfertaViagemDataBuilder();
         var listaOfertas = databuilder.Generate(80);
-        app.Context.OfertasViagem.AddRange(listaOfertas);
-        app.Context.SaveChanges();
+        _app.Context.OfertasViagem.AddRange(listaOfertas);
+        _app.Context.SaveChanges();
 
-        using var client = await app.GetClientWithAccessTokenAsync();
+        using var client = await _app.GetClientWithAccessTokenAsync();
 
         int pagina = 4;
         int tamanhoPorPagina = 25;
@@ -97,16 +97,16 @@ public class OfertaViagem_GET : IClassFixture<JornadaMilhasWebApplicationFactory
     public async Task Recuperar_OfertasViagens_Quando_Pagina_Nao_Existente()
     {
         //Arrange
-        app.Context.Database.ExecuteSqlRaw("DELETE FROM OfertasViagem");
-        app.Context.Database.ExecuteSqlRaw("DELETE FROM Rota");
+        _app.Context.Database.ExecuteSqlRaw("DELETE FROM OfertasViagem");
+        _app.Context.Database.ExecuteSqlRaw("DELETE FROM Rota");
 
         OfertaViagemDataBuilder databuilder = new OfertaViagemDataBuilder();
 
         var listaOfertas = databuilder.Generate(80);
-        app.Context.OfertasViagem.AddRange(listaOfertas);
-        app.Context.SaveChanges();
+        _app.Context.OfertasViagem.AddRange(listaOfertas);
+        _app.Context.SaveChanges();
 
-        using var client = await app.GetClientWithAccessTokenAsync();
+        using var client = await _app.GetClientWithAccessTokenAsync();
 
         int pagina = 5;
         int tamanhoPorPagina = 25;
@@ -116,23 +116,23 @@ public class OfertaViagem_GET : IClassFixture<JornadaMilhasWebApplicationFactory
 
         //Assert
         Assert.True(response != null);
-        Assert.Equal(0, response.Count());
+        Assert.Equal(0, response.Count);
     }
 
     [Fact]
     public async Task Recuperar_OfertasViagens_Quando_Pagina_Negativa()
     {
         //Arrange
-        app.Context.Database.ExecuteSqlRaw("DELETE FROM OfertasViagem");
-        app.Context.Database.ExecuteSqlRaw("DELETE FROM Rota");
+        _app.Context.Database.ExecuteSqlRaw("DELETE FROM OfertasViagem");
+        _app.Context.Database.ExecuteSqlRaw("DELETE FROM Rota");
 
         OfertaViagemDataBuilder databuilder = new OfertaViagemDataBuilder();
 
         var listaOfertas = databuilder.Generate(80);
-        app.Context.OfertasViagem.AddRange(listaOfertas);
-        app.Context.SaveChanges();
+        _app.Context.OfertasViagem.AddRange(listaOfertas);
+        _app.Context.SaveChanges();
 
-        using var client = await app.GetClientWithAccessTokenAsync();
+        using var client = await _app.GetClientWithAccessTokenAsync();
 
         int pagina = -5;
         int tamanhoPorPagina = 25;
@@ -140,12 +140,59 @@ public class OfertaViagem_GET : IClassFixture<JornadaMilhasWebApplicationFactory
         //Act + Assert
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-
             var response = await client.GetFromJsonAsync<ICollection<OfertaViagem>>($"/ofertas-viagem?pagina={pagina}&tamanhoPorPagina={tamanhoPorPagina}");
         });
-
     }
-     
 
+    [Fact]
+    public async Task Recuperar_OfertaViagem_Com_Maior_Desconto()
+    {
+        //Arrange  
+        var ofertaExistente = _app.Context.OfertasViagem.FirstOrDefault();
+        if (ofertaExistente is null)
+        {
+            ofertaExistente = new OfertaViagem()
+            {
+                Preco = 100,
+                Rota = new Rota("Origem", "Destino"),
+                Periodo = new Periodo(DateTime.Parse("2024-03-03"), DateTime.Parse("2024-03-06"))
+            };
+            _app.Context.Add(ofertaExistente);
+            _app.Context.SaveChanges();
+        }
 
+        using var client = await _app.GetClientWithAccessTokenAsync();
+
+        //Act
+        var response = await client.GetFromJsonAsync<OfertaViagem>("/ofertas-viagem/maior-desconto");
+
+        //Assert
+        Assert.NotNull(response);
+    }
+
+    [Fact]
+    public async Task Recuperar_Ultima_OfertaViagem_Cadastrada()
+    {
+        //Arrange  
+        var ofertaExistente = _app.Context.OfertasViagem.FirstOrDefault();
+        if (ofertaExistente is null)
+        {
+            ofertaExistente = new OfertaViagem()
+            {
+                Preco = 100,
+                Rota = new Rota("Origem", "Destino"),
+                Periodo = new Periodo(DateTime.Parse("2024-03-03"), DateTime.Parse("2024-03-06"))
+            };
+            _app.Context.Add(ofertaExistente);
+            _app.Context.SaveChanges();
+        }
+
+        using var client = await _app.GetClientWithAccessTokenAsync();
+
+        //Act
+        var response = await client.GetFromJsonAsync<OfertaViagem>("/ofertas-viagem/ultima-oferta");
+
+        //Assert
+        Assert.NotNull(response);
+    }
 }

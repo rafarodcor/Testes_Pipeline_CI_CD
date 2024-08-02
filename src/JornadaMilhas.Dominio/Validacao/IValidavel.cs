@@ -2,6 +2,7 @@
 using System.Text;
 
 namespace JornadaMilhas.Dominio.Validacao;
+
 public class Erros : IEnumerable<Erro>
 {
     private readonly ICollection<Erro> erros = new List<Erro>();

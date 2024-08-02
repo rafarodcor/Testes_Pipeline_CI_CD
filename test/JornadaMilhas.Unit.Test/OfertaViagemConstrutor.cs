@@ -2,6 +2,7 @@
 using JornadaMilhas.Dominio.ValueObjects;
 
 namespace JornadaMilhas.Unity.Test;
+
 public class OfertaViagemConstrutor
 {
     [Theory]
@@ -20,7 +21,7 @@ public class OfertaViagemConstrutor
         OfertaViagem oferta = new OfertaViagem(rota, periodo, preco);
 
         //assert
-        Assert.Equal(validacao, oferta.EhValido);        
+        Assert.Equal(validacao, oferta.EhValido);
     }
 
     [Fact]

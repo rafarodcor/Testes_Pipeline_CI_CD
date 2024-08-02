@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace JornadaMilhas.Dados;
+
 public class JornadaMilhasContext : IdentityDbContext
 {
     public DbSet<OfertaViagem> OfertasViagem { get; set; }
@@ -12,12 +13,11 @@ public class JornadaMilhasContext : IdentityDbContext
 
     public JornadaMilhasContext(DbContextOptions<JornadaMilhasContext> options) : base(options) { }
 
-    //private string connectionString = "Server=tcp:jornadamilhasbdserver.database.windows.net,1433;Initial Catalog=JornadaMilhasV3;Persist Security Info=False;User ID=andre;Password=Alura#2024;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+    //private string connectionString = "Server=tcp:jornadamilhasbdserver.database.windows.net,1433;Initial Catalog=JornadaMilhas;Persist Security Info=False;User ID=andre;Password=sqlRRC00!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
     private string connectionString = "Server=sqlserver;Database=JornadaMilhas;User ID=sa;Password=sqlRRC00!;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-
         if (optionsBuilder.IsConfigured)
             return;
 

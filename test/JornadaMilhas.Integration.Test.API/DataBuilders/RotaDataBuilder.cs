@@ -1,8 +1,8 @@
 ﻿using Bogus;
 using JornadaMilhas.Dominio.Entidades;
 
-
 namespace JornadaMilhas.Integration.Test.API.DataBuilders;
+
 internal class RotaDataBuilder : Faker<Rota>
 {
     public string? Origem { get; set; }

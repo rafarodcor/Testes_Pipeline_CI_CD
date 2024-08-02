@@ -41,11 +41,11 @@ public static class AuthExtensions
                user.Password!, isPersistent: false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
-            {
                 return Results.BadRequest("Login inválido.");
-            }
+
             return Results.Ok(generateToken.GenerateUserToken(user));
 
-        }).WithTags("Autenticação").WithSummary("Realiza o login de um usuário.").WithOpenApi();
+        })
+        .WithTags("Autenticação").WithSummary("Realiza o login de um usuário.").WithOpenApi();
     }
 }

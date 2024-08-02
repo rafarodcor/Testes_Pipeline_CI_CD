@@ -9,9 +9,7 @@ public static class MigracoesPendentes
     {
         using (var serviceScope = app.ApplicationServices.CreateScope())
         {
-            var serviceDb = serviceScope.ServiceProvider
-                             .GetService<JornadaMilhasContext>();
-
+            var serviceDb = serviceScope.ServiceProvider.GetService<JornadaMilhasContext>();
             serviceDb!.Database.Migrate();
         }
     }

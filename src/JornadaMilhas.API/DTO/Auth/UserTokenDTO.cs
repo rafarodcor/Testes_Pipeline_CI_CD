@@ -1,8 +1,7 @@
-﻿namespace JornadaMilhas.API.DTO.Auth
+﻿namespace JornadaMilhas.API.DTO.Auth;
+
+public class UserTokenDTO
 {
-    public class UserTokenDTO
-    {
-        public DateTime Expiration { get; set; }
-        public string Token { get; set; } = string.Empty;
-    }
+    public DateTime Expiration { get; set; }
+    public string Token { get; set; } = string.Empty;
 }

@@ -8,31 +8,27 @@ namespace JornadaMilhas.API.Service;
 
 internal class GenerateToken
 {
-    private readonly IConfiguration configuration;
-    public GenerateToken(IConfiguration configuration)
-    {
-        this.configuration = configuration;
-    }
+    private readonly IConfiguration _configuration;
+    public GenerateToken(IConfiguration configuration) => _configuration = configuration;
 
     internal UserTokenDTO GenerateUserToken(UserDTO user)
     {
         //Configurações a serem usadas no Token a ser gerado.
         var myClaims = new[]
         {
-               new Claim(JwtRegisteredClaimNames.UniqueName,user.Email!),
-               new Claim("alura","c#"),
-               new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
-            };
+            new Claim(JwtRegisteredClaimNames.UniqueName,user.Email!),
+            new Claim("alura","c#"),
+            new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+        };
 
         //Gerar uma chave simétrica
-        var chave = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(configuration["JWTKey:key"]!));
+        var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTKey:key"]!));
 
         //Faz uma assinatura da chave
         var credenciais = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
 
         //Expiration
-        var expiracao = configuration["JWTTokenConfiguration:ExpireHours"];
+        var expiracao = _configuration["JWTTokenConfiguration:ExpireHours"];
         var expiracaoEmHoras = DateTime.UtcNow.AddHours(double.Parse(expiracao!));
 
         //Gerando Token
@@ -42,14 +38,12 @@ internal class GenerateToken
             token = new JwtSecurityToken(
             claims: myClaims,
             expires: expiracaoEmHoras,
-            issuer: configuration["JWTTokenConfiguration:Issuer"],
-            audience: configuration["JWTTokenConfiguration:Audience"],
-            signingCredentials: credenciais
-            );
+            issuer: _configuration["JWTTokenConfiguration:Issuer"],
+            audience: _configuration["JWTTokenConfiguration:Audience"],
+            signingCredentials: credenciais);
         }
         catch (Exception)
         {
-
             throw new ArgumentException("Problemas na geração do token JWT.");
         }
 
